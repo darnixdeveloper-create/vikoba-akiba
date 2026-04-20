@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "A member of the Vikoba group",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "phone": { "type": "string" },
+        "paid": { "type": "boolean" },
+        "pass": { "type": "string" },
+        "isAdmin": { "type": "boolean" },
+        "photo": { "type": "string" },
+        "contributions": { "type": "number" }
+      },
+      "required": ["id", "name", "role", "phone", "paid", "isAdmin", "contributions"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A payment or payout record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "memberName": { "type": "string" },
+        "type": { "type": "string", "enum": ["Mchango", "Malipo"] },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "memberId", "memberName", "type", "amount", "date"]
+    },
+    "MzungukoItem": {
+      "title": "MzungukoItem",
+      "description": "An item in the rotation schedule",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "name": { "type": "string" },
+        "month": { "type": "string" },
+        "status": { "type": "string", "enum": ["done", "current", "waiting"] },
+        "position": { "type": "number" }
+      },
+      "required": ["id", "memberId", "name", "month", "status", "position"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Group settings",
+      "type": "object",
+      "properties": {
+        "groupName": { "type": "string" },
+        "amount": { "type": "number" },
+        "payDay": { "type": "number" }
+      },
+      "required": ["groupName", "amount", "payDay"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "A group notification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderName": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "type": { "type": "string", "enum": ["payment", "system"] },
+        "read": { "type": "boolean" }
+      },
+      "required": ["id", "senderName", "message", "timestamp", "type", "read"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": {
+      "schema": "Member",
+      "description": "Collection of all members"
+    },
+    "/historia/{txId}": {
+      "schema": "Transaction",
+      "description": "Collection of all transactions"
+    },
+    "/mzunguko/{itemId}": {
+      "schema": "MzungukoItem",
+      "description": "Rotation items"
+    },
+    "/settings/config": {
+      "schema": "Settings",
+      "description": "Single document for group settings"
+    },
+    "/notifications/{notifId}": {
+      "schema": "AppNotification",
+      "description": "Group feed notifications"
+    }
+  }
+}

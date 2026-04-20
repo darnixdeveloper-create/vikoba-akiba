@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && (
+        (exists(/databases/$(database)/documents/members/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/members/$(request.auth.uid)).data.isAdmin == true &&
+         get(/databases/$(database)/documents/members/$(request.auth.uid)).data.role == 'Mwenyekiti') ||
+        request.auth.token.email == "darnixdeveloper@gmail.com"
+      );
+    }
+    function isOwner(memberId) { return isSignedIn() && request.auth.uid == memberId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // --- Validation Blueprints ---
+    
+    function isValidMember(data) {
+      return data.keys().hasAll(['id', 'name', 'role', 'phone', 'paid', 'isAdmin', 'contributions']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.name is string && data.name.size() <= 100 &&
+             data.role is string && data.phone is string &&
+             data.paid is bool && data.isAdmin is bool &&
+             data.contributions is number &&
+             // Optional fields
+             (!data.keys().contains('email') || (data.email is string && data.email.size() <= 150)) &&
+             (!data.keys().contains('pass') || (data.pass is string && data.pass.size() <= 100)) &&
+             (!data.keys().contains('photo') || (data.photo is string && data.photo.size() <= 1000000));
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['id', 'memberId', 'memberName', 'type', 'amount', 'date']) &&
+             data.keys().size() >= 6 && data.keys().size() <= 10 &&
+             data.id is string && data.memberId is string &&
+             data.memberName is string &&
+             data.type in ['Mchango', 'Malipo'] &&
+             data.amount is number && data.amount > 0 &&
+             data.date is string;
+    }
+
+    // --- Collection Matches ---
+
+    match /members/{memberId} {
+      allow read: if isSignedIn();
+      allow create: if isAdmin() && isValidMember(incoming()) && incoming().id == memberId;
+      allow update: if (isAdmin() || (isOwner(memberId) && incoming().diff(existing()).affectedKeys().hasOnly(['photo', 'pass']))) && isValidMember(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /historia/{txId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidTransaction(incoming()) && 
+                    exists(/databases/$(database)/documents/members/$(incoming().memberId));
+      allow update: if isAdmin(); // Regular users can't edit history
+      allow delete: if isAdmin();
+    }
+
+    match /mzunguko/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /settings/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+  }
+}
