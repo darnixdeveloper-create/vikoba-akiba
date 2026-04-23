@@ -71,7 +71,7 @@ export default function Sidebar({
       )}
 
       <div className={cn(
-        "flex flex-col h-full bg-luxury-gray border-r border-luxury-border w-64 fixed lg:sticky top-0 z-40 transition-transform duration-300 lg:translate-x-0 bg-gradient-to-b from-[#161512] to-luxury-dark",
+        "flex flex-col h-full bg-luxury-gray border-r border-luxury-border w-64 fixed lg:sticky top-0 z-40 transition-transform duration-300 lg:translate-x-0 bg-gradient-to-b from-luxury-gray to-luxury-dark",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
       <div className="px-8 pt-8 pb-10">
@@ -82,15 +82,19 @@ export default function Sidebar({
       <nav className="flex-1">
         {menuItems.map((item) => {
           const isActive = currentPage === item.id;
+          const isDisabled = user.mustChangePassword && item.id !== 'Profile';
+          
           return (
             <button
               key={item.id}
-              onClick={() => setCurrentPage(item.id)}
+              onClick={() => !isDisabled && setCurrentPage(item.id)}
+              disabled={isDisabled}
               className={cn(
                 "w-full flex items-center gap-3 px-8 py-3.5 transition-all text-sm font-medium",
                 isActive 
                   ? "bg-gold/5 border-l-3 border-gold text-gold" 
-                  : "border-l-3 border-transparent text-luxury-text-muted hover:text-luxury-text"
+                  : "border-l-3 border-transparent text-luxury-text-muted hover:text-luxury-text",
+                isDisabled && "opacity-20 cursor-not-allowed"
               )}
             >
               {item.icon}
@@ -100,7 +104,7 @@ export default function Sidebar({
         })}
       </nav>
 
-      <div className="px-8 py-6 border-t border-white/5 space-y-4 opacity-60">
+      <div className="px-8 py-6 border-t border-luxury-border space-y-4 opacity-60">
         <div className="flex items-center justify-between">
           <div className="flex flex-col overflow-hidden">
             <span className="text-xs font-medium text-luxury-text truncate">{user.name}</span>

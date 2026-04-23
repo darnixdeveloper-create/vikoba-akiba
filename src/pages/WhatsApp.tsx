@@ -84,7 +84,7 @@ export default function WhatsApp({ data, lang, addToast }: WhatsAppProps) {
               className={`w-full text-left p-4 rounded-lg border transition-all flex items-center gap-3 ${
                 selectedType === type.id 
                   ? 'bg-gold/10 border-gold text-gold shadow-lg' 
-                  : 'bg-luxury-gray border-luxury-border text-luxury-text-muted hover:bg-white/5'
+                  : 'bg-luxury-gray border-luxury-border text-luxury-text-muted hover:bg-luxury-text/5'
               }`}
             >
               <div className={selectedType === type.id ? 'text-gold' : 'text-luxury-text-muted'}>
@@ -102,7 +102,7 @@ export default function WhatsApp({ data, lang, addToast }: WhatsAppProps) {
                     key={member.id}
                     onClick={() => setSelectedMemberId(member.id)}
                     className={`w-full flex items-center gap-3 p-2 rounded-md border transition-all ${
-                      selectedMemberId === member.id ? 'bg-gold/20 border-gold' : 'border-transparent hover:bg-white/5'
+                      selectedMemberId === member.id ? 'bg-gold/20 border-gold' : 'border-transparent hover:bg-luxury-text/5'
                     }`}
                   >
                     <Avatar name={member.name} photo={member.photo} className="w-8 h-8" />

@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { LogIn } from 'lucide-react';
-import { Member } from '../types';
-import { T } from '../constants';
+import { Member, Settings } from '../types';
+import { T, THEMES } from '../constants';
 import { cn } from '../lib/utils';
 import { auth } from '../lib/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -11,15 +11,19 @@ interface LoginProps {
   members: Member[];
   onLogin: (user: Member) => void;
   lang: 'sw' | 'en';
+  settings: Settings;
 }
 
-export default function Login({ members, onLogin, lang }: LoginProps) {
+export default function Login({ members, onLogin, lang, settings }: LoginProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const i18n = T[lang];
+
+  const currentTheme = THEMES.find(t => t.id === settings.theme);
+  const themeClass = currentTheme ? currentTheme.class : 'bg-luxury-dark';
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,10 +63,20 @@ export default function Login({ members, onLogin, lang }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-luxury-dark relative p-4">
-      <div className="grain-overlay" />
+    <div 
+      className={cn("min-h-screen flex items-center justify-center relative p-4 transition-colors duration-700", themeClass)}
+      style={settings.customBackground ? {
+        backgroundImage: `url(${settings.customBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      } : {}}
+    >
+      <div className={cn("grain-overlay", settings.theme === 'white' && "opacity-0")} />
+      {settings.customBackground && (
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+      )}
       
-      <div className="w-full max-w-md bg-luxury-gray gold-top-border rounded-lg shadow-2xl p-8 relative z-10">
+      <div className="w-full max-w-md bg-luxury-gray gold-top-border rounded-lg shadow-2xl p-8 relative z-10 luxury-glass">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-serif font-bold text-gold mb-2">Upendo VICOBA</h1>
           <p className="text-luxury-text-muted text-sm">{i18n.login}</p>
@@ -129,11 +143,13 @@ export default function Login({ members, onLogin, lang }: LoginProps) {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-luxury-border text-center">
-          <p className="text-xs text-luxury-text-muted">
-            <span className="font-semibold text-luxury-text">DEMO: </span>
-            {i18n.loginHint}
-          </p>
+        <div className="mt-6 flex justify-center">
+           <button 
+             onClick={() => { localStorage.clear(); window.location.reload(); }}
+             className="text-[10px] uppercase tracking-widest text-luxury-text-muted hover:text-gold transition-colors"
+           >
+             Huwezi kuingia? Bonyeza hapa kurekebisha mfumo
+           </button>
         </div>
       </div>
     </div>

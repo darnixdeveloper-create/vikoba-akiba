@@ -18,6 +18,15 @@
   font-family: var(--font-sans);
 }
 
+.theme-white {
+  --color-luxury-dark: #ffffff;
+  --color-luxury-gray: #f9f9f9;
+  --color-luxury-border: rgba(0, 0, 0, 0.1);
+  --color-luxury-text: #1a1a1a;
+  --color-luxury-text-muted: #666666;
+  color: #1a1a1a;
+}
+
 body {
   margin: 0;
   overflow-x: hidden;
@@ -82,10 +91,69 @@ h1, h2, h3, h4, h5, h6 {
   animation: slideOut 0.4s ease-in forwards;
 }
 
-/* PDF Styles */
-#pdf-report {
-  font-family: serif;
-  color: black;
-  background: white;
-  padding: 40px;
+/* Shine/Shimmer Effect */
+.shimmer-active {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-active::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 80%
+  );
+  animation: shine-anim 6s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes shine-anim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Luxury Glass Card */
+.luxury-glass {
+  background: rgba(15, 14, 12, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.gold-glow {
+  text-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+}
+
+.gold-card {
+  background: var(--color-luxury-gray);
+  border: 1px solid var(--color-luxury-border);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.gold-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.5;
+}
+
+.gold-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }

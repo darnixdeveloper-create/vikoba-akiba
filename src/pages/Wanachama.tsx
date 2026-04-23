@@ -100,7 +100,8 @@ export default function Wanachama({ data, updateData, addToast, user }: Wanacham
         email: email || undefined,
         isAdmin: role === 'Mwenyekiti',
         photo,
-        contributions: parseFloat(initialContributions) || 0
+        contributions: parseFloat(initialContributions) || 0,
+        mustChangePassword: true
       };
 
       // Add to mzunguko as waiting
@@ -177,7 +178,7 @@ export default function Wanachama({ data, updateData, addToast, user }: Wanacham
             </thead>
             <tbody className="divide-y divide-luxury-border">
               {data.members.map((member) => (
-                <tr key={member.id} className="hover:bg-white/5 transition-all">
+                <tr key={member.id} className="hover:bg-luxury-text/5 transition-all">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <Avatar name={member.name} photo={member.photo} />
@@ -186,7 +187,12 @@ export default function Wanachama({ data, updateData, addToast, user }: Wanacham
                           <p className="font-bold text-luxury-text">{member.name}</p>
                           {member.isAdmin && <ShieldCheck className="w-4 h-4 text-gold" />}
                         </div>
-                        <p className="text-xs text-luxury-text-muted">{member.role}</p>
+                        <p className="text-xs text-luxury-text-muted">
+                          {member.role === 'Mwenyekiti' && i18n.roleChairperson}
+                          {member.role === 'Mhazini' && i18n.roleTreasurer}
+                          {member.role === 'Katibu' && i18n.roleSecretary}
+                          {member.role === 'Mwanachama' && i18n.roleMember}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -245,7 +251,7 @@ export default function Wanachama({ data, updateData, addToast, user }: Wanacham
           <div className="flex gap-4">
             <button 
               onClick={() => setMemberToRemove(null)}
-              className="flex-1 px-4 py-3 border border-luxury-border rounded-md text-luxury-text hover:bg-white/5 transition-colors font-bold uppercase tracking-widest text-xs"
+              className="flex-1 px-4 py-3 border border-luxury-border rounded-md text-luxury-text hover:bg-luxury-text/5 transition-colors font-bold uppercase tracking-widest text-xs"
             >
               {data.language === 'sw' ? 'Ghairi' : 'Cancel'}
             </button>
@@ -351,10 +357,10 @@ export default function Wanachama({ data, updateData, addToast, user }: Wanacham
                   onChange={e => setRole(e.target.value as Role)}
                   className="w-full bg-luxury-dark border border-luxury-border rounded-md px-4 py-3 text-luxury-text focus:outline-none focus:border-gold transition-colors"
                 >
-                  <option value="Mwanachama">Mwanachama</option>
-                  <option value="Mwenyekiti">Mwenyekiti</option>
-                  <option value="Mhazini">Mhazini</option>
-                  <option value="Katibu">Katibu</option>
+                  <option value="Mwanachama">{i18n.roleMember}</option>
+                  <option value="Mwenyekiti">{i18n.roleChairperson}</option>
+                  <option value="Mhazini">{i18n.roleTreasurer}</option>
+                  <option value="Katibu">{i18n.roleSecretary}</option>
                 </select>
               </div>
               <div>

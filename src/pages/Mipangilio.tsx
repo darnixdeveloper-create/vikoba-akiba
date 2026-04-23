@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
 import { AppData, Settings } from '../types';
-import { T, DEMO_MEMBERS, DEMO_HISTORIA, DEMO_MZUNGUKO, DEMO_SETTINGS } from '../constants';
-import { Save, Database, Trash2, Download, Settings as SettingsIcon, ShieldAlert, CloudUpload } from 'lucide-react';
+import { T, DEMO_MEMBERS, DEMO_HISTORIA, DEMO_MZUNGUKO, DEMO_SETTINGS, THEMES } from '../constants';
+import { Save, Database, Trash2, Download, Settings as SettingsIcon, ShieldAlert, CloudUpload, Palette, Camera } from 'lucide-react';
 import { updateSettingsInCloud, addMemberToCloud, addTransactionToCloud, updateMzungukoInCloud, addNotificationToCloud } from '../services/firebaseService';
+import { fileToBase64 } from '../lib/storage';
 
 interface MipangilioProps {
   data: AppData;
@@ -58,6 +59,16 @@ export default function Mipangilio({ data, updateData, addToast, onReset }: Mipa
     if (confirm(data.language === 'sw' ? 'Je, una Uhakika unataka kufuta data zote? Kitendo hiki hakiwezi kurudishwa.' : 'Are you sure you want to delete all data? This action cannot be undone.')) {
       localStorage.clear();
       onReset();
+    }
+  };
+
+  const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const base64 = await fileToBase64(e.target.files[0]);
+      const newSettings = { ...form, customBackground: base64, theme: 'custom' };
+      setForm(newSettings);
+      updateData({ settings: newSettings });
+      addToast(data.language === 'sw' ? 'Background imewekwa!' : 'Background applied!', 'success');
     }
   };
 
@@ -119,6 +130,53 @@ export default function Mipangilio({ data, updateData, addToast, onReset }: Mipa
               {i18n.saveSettings}
             </button>
           </form>
+
+          {/* Theme Selection */}
+          <div className="space-y-6 pt-4">
+            <h3 className="text-gold font-serif font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+              <Palette className="w-4 h-4" />
+              {data.language === 'sw' ? 'Muonekano wa Background' : 'Background Theme'}
+            </h3>
+            
+            <div className="bg-luxury-gray p-8 rounded-lg border border-luxury-border space-y-6 shadow-2xl">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {THEMES.map((theme) => (
+                  <button
+                    key={theme.id}
+                    onClick={() => setForm({ ...form, theme: theme.id })}
+                    className={`p-3 rounded-md border-2 transition-all text-xs font-bold uppercase tracking-tighter ${
+                      form.theme === theme.id ? 'border-gold bg-gold/10' : 'border-luxury-border hover:border-gold/50'
+                    }`}
+                  >
+                    <div className={`w-full h-8 rounded mb-2 ${theme.class} border border-luxury-border shadow-inner`} />
+                    {theme.name}
+                  </button>
+                ))}
+              </div>
+
+              {form.theme === 'custom' && (
+                <div className="space-y-4 pt-2">
+                  <label className="block text-xs uppercase tracking-widest text-luxury-text-muted">Upload Custom Image</label>
+                  <div className="relative group">
+                    <div className="w-full h-32 rounded-md border-2 border-dashed border-luxury-border flex flex-col items-center justify-center overflow-hidden hover:border-gold transition-colors">
+                      {form.customBackground ? (
+                        <img src={form.customBackground} alt="Custom Background" className="w-full h-full object-cover opacity-50" />
+                      ) : (
+                        <Camera className="w-8 h-8 text-luxury-text-muted" />
+                      )}
+                      <span className="text-[10px] uppercase font-bold mt-2 text-luxury-text-muted">Choose File</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleBackgroundUpload}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Right: Data Management */}

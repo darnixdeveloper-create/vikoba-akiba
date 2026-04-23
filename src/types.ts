@@ -12,6 +12,7 @@ export interface Member {
   email?: string;
   photo?: string; // base64
   contributions: number;
+  mustChangePassword?: boolean;
 }
 
 export interface Transaction {
@@ -37,6 +38,8 @@ export interface Settings {
   groupName: string;
   amount: number;
   payDay: number;
+  theme?: string;
+  customBackground?: string; // base64 or URL
 }
 
 export interface AppNotification {

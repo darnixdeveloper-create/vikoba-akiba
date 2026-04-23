@@ -14,6 +14,7 @@ import ToastContainer from './components/ToastContainer';
 import { AnimatePresence, motion } from 'motion/react';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import { THEMES } from './constants';
 
 // Page components (To be created)
 import Dashboard from './pages/Dashboard';
@@ -127,16 +128,32 @@ export default function App() {
     return data.members.filter(m => !m.paid).length;
   }, [data.members]);
 
+  const currentThemeClass = useMemo(() => {
+    const theme = THEMES.find(t => t.id === data.settings.theme);
+    return theme ? theme.class : 'bg-luxury-dark';
+  }, [data.settings.theme]);
+
   if (!currentUser) {
     return (
-      <>
-        <Login members={data.members} onLogin={handleLogin} lang={data.language} />
+      <div className={data.settings.theme === 'white' ? 'theme-white' : ''}>
+        <Login 
+          members={data.members} 
+          onLogin={handleLogin} 
+          lang={data.language} 
+          settings={data.settings}
+        />
         <ToastContainer toasts={toasts} removeToast={removeToast} />
-      </>
+      </div>
     );
   }
 
   const renderPage = () => {
+    if (!currentUser) return null;
+    
+    if (currentUser.mustChangePassword) {
+      return <Profile user={currentUser} data={data} lang={data.language} updateData={updateData} addToast={addToast} setCurrentPage={setCurrentPage} />;
+    }
+
     switch (currentPage) {
       case 'Dashboard':
         return <Dashboard data={data} user={currentUser} addToast={addToast} />;
@@ -153,15 +170,24 @@ export default function App() {
       case 'Mipangilio':
         return <Mipangilio data={data} updateData={updateData} addToast={addToast} onReset={() => window.location.reload()} />;
       case 'Profile':
-        return <Profile user={currentUser} data={data} lang={data.language} updateData={updateData} addToast={addToast} />;
+        return <Profile user={currentUser} data={data} lang={data.language} updateData={updateData} addToast={addToast} setCurrentPage={setCurrentPage} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-luxury-dark text-luxury-text font-sans selection:bg-gold/30">
-      <div className="grain-overlay" />
+    <div 
+      className={`flex min-h-screen text-luxury-text font-sans selection:bg-gold/30 transition-colors duration-1000 ${currentThemeClass}`}
+      style={data.settings.theme === 'custom' && data.settings.customBackground ? {
+        backgroundImage: `url(${data.settings.customBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      } : {}}
+    >
+      <div className={`grain-overlay ${data.settings.theme === 'white' ? 'opacity-0' : 'opacity-0.04'}`} />
+      <div className={`fixed inset-0 pointer-events-none shimmer-active ${data.settings.theme === 'white' ? 'opacity-10' : 'opacity-30'}`} />
       <ToastContainer toasts={toasts} removeToast={removeToast} />
       <PDFReport data={data} />
 

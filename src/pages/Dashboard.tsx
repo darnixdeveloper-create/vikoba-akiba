@@ -148,7 +148,7 @@ export default function Dashboard({ data, user, addToast }: DashboardProps) {
           <div className="gold-card p-5">
             <h3 className="text-xl font-serif italic text-luxury-text mb-4">{i18n.receivingNow}</h3>
             {currentReceiver ? (
-              <div className="flex items-center gap-4 bg-white/5 p-4 rounded">
+              <div className="flex items-center gap-4 bg-luxury-text/5 p-4 rounded">
                 <div className="avatar w-12 h-12 text-lg rounded-full bg-[#2a2924] border border-gold flex items-center justify-center text-gold font-bold">
                   {currentReceiver.name.charAt(0)}
                 </div>
@@ -178,9 +178,9 @@ export default function Dashboard({ data, user, addToast }: DashboardProps) {
                 <th className="p-4">{i18n.date}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-luxury-border">
               {recentTransactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-white/5 transition-all">
+                <tr key={tx.id} className="hover:bg-luxury-text/5 transition-all">
                   <td className="p-4 text-sm font-medium">
                      {tx.memberName}
                   </td>

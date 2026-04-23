@@ -139,7 +139,7 @@ export default function Historia({ data, updateData, addToast, user }: HistoriaP
             </thead>
             <tbody className="divide-y divide-luxury-border">
               {filteredHistory.map((tx) => (
-                <tr key={tx.id} className="hover:bg-white/5 transition-all group">
+                <tr key={tx.id} className="hover:bg-luxury-text/5 transition-all group">
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                        <Avatar name={tx.memberName} className="w-6 h-6 border-none" />

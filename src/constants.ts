@@ -2,7 +2,7 @@
 import { AppData, Member, Transaction, MzungukoItem } from './types';
 
 export const DEMO_MEMBERS: Member[] = [
-  { id: '1', name: 'Fatuma Hassan', role: 'Mwenyekiti', phone: '+255 712 111 111', paid: true, pass: '1234', isAdmin: true, contributions: 350000 },
+  { id: '1', name: 'Fatuma Hassan', role: 'Mwenyekiti', phone: '+255 712 111 111', paid: true, pass: '1234', isAdmin: true, contributions: 350000, mustChangePassword: true },
   { id: '2', name: 'Amina Juma', role: 'Mhazini', phone: '+255 712 222 222', paid: true, pass: '1234', isAdmin: false, contributions: 350000 },
   { id: '3', name: 'Rehema Mwamba', role: 'Katibu', phone: '+255 712 333 333', paid: true, pass: '1234', isAdmin: false, contributions: 350000 },
   { id: '4', name: 'Zainab Omar', role: 'Mwanachama', phone: '+255 712 444 444', paid: true, pass: '1234', isAdmin: false, contributions: 150000 },
@@ -36,8 +36,19 @@ export const DEMO_MZUNGUKO: MzungukoItem[] = [
 export const DEMO_SETTINGS = {
   groupName: "Vikoba cha Upendo",
   amount: 50000,
-  payDay: 10
+  payDay: 10,
+  theme: 'luxury-dark'
 };
+
+export const THEMES = [
+  { id: 'luxury-dark', name: 'Luxury Dark', class: 'bg-luxury-dark' },
+  { id: 'black', name: 'Pure Black', class: 'bg-black' },
+  { id: 'white', name: 'Pure White (Light)', class: 'bg-white theme-white' },
+  { id: 'royal-blue', name: 'Royal Blue', class: 'bg-[#001f3f]' },
+  { id: 'deep-purple', name: 'Deep Purple', class: 'bg-[#1a0b2e]' },
+  { id: 'emerald-green', name: 'Emerald Green', class: 'bg-[#062c1e]' },
+  { id: 'custom', name: 'Custom Photo', class: '' },
+];
 
 export const T = {
   sw: {
@@ -104,6 +115,10 @@ export const T = {
     loginPassword: "Neno la Siri la Kuingia",
     removeMember: "Muondoe Mwanachama",
     confirmRemove: "Je, una uhakika unataka kumuondoa mwanachama huyu?",
+    roleChairperson: "Mwenyekiti",
+    roleTreasurer: "Mhazini",
+    roleSecretary: "Katibu",
+    roleMember: "Mwanachama",
   },
   en: {
     dashboard: "Dashboard",
@@ -169,5 +184,9 @@ export const T = {
     loginPassword: "Login Password",
     removeMember: "Remove Member",
     confirmRemove: "Are you sure you want to remove this member?",
+    roleChairperson: "Chairperson",
+    roleTreasurer: "Treasurer",
+    roleSecretary: "Secretary",
+    roleMember: "Member",
   }
 };

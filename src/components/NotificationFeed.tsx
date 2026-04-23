@@ -30,10 +30,10 @@ export default function NotificationFeed({ notifications, lang }: NotificationFe
         </h3>
         <span className="text-[10px] uppercase tracking-widest text-luxury-text-muted">Live Feed</span>
       </div>
-      <div className="overflow-y-auto divide-y divide-white/5 custom-scrollbar">
+      <div className="overflow-y-auto divide-y divide-luxury-border custom-scrollbar">
         {notifications.map((notif) => (
           <div key={notif.id} className={cn(
-             "p-4 transition-all hover:bg-white/5",
+             "p-4 transition-all hover:bg-luxury-text/5",
              !notif.read && "border-l-2 border-l-gold"
           )}>
             <div className="flex gap-3">

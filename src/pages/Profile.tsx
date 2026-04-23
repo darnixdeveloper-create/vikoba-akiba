@@ -12,9 +12,10 @@ interface ProfileProps {
   lang: 'sw' | 'en';
   addToast: (msg: string, type?: any) => void;
   updateData: (newData: Partial<AppData>) => void;
+  setCurrentPage: (page: any) => void;
 }
 
-export default function Profile({ user, data, lang, addToast, updateData }: ProfileProps) {
+export default function Profile({ user, data, lang, addToast, updateData, setCurrentPage }: ProfileProps) {
   const i18n = T[lang];
   const [name, setName] = useState(user.name);
   const [phone, setPhone] = useState(user.phone);
@@ -39,7 +40,8 @@ export default function Profile({ user, data, lang, addToast, updateData }: Prof
       phone,
       email: email || undefined,
       pass,
-      photo
+      photo,
+      mustChangePassword: false
     };
 
     try {
@@ -66,6 +68,13 @@ export default function Profile({ user, data, lang, addToast, updateData }: Prof
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-10">
       <div className="bg-luxury-gray border border-luxury-border rounded-lg overflow-hidden shadow-2xl p-8 gold-top-border">
+        {user.mustChangePassword && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-md text-red-400 text-sm text-center font-bold animate-pulse">
+            {lang === 'sw' 
+              ? "Tafadhali badilisha neno lako la siri la sasa ili kuendelea kutumia mfumo." 
+              : "Please change your temporary password to continue using the system."}
+          </div>
+        )}
         <div className="flex flex-col items-center mb-10">
            <div className="relative group mb-6">
               <div className="w-40 h-40 rounded-full bg-luxury-dark border-4 border-luxury-border flex items-center justify-center overflow-hidden transition-all group-hover:border-gold shadow-2xl">
@@ -89,7 +98,12 @@ export default function Profile({ user, data, lang, addToast, updateData }: Prof
             </div>
             
             <h2 className="text-2xl font-serif font-bold text-luxury-text">{user.name}</h2>
-            <span className="text-gold uppercase tracking-widest text-xs font-bold mt-1">{user.role}</span>
+            <span className="text-gold uppercase tracking-widest text-xs font-bold mt-1">
+              {user.role === 'Mwenyekiti' && i18n.roleChairperson}
+              {user.role === 'Mhazini' && i18n.roleTreasurer}
+              {user.role === 'Katibu' && i18n.roleSecretary}
+              {user.role === 'Mwanachama' && i18n.roleMember}
+            </span>
         </div>
 
         <form onSubmit={handleSave} className="space-y-6">
@@ -172,6 +186,18 @@ export default function Profile({ user, data, lang, addToast, updateData }: Prof
             </button>
           </div>
         </form>
+
+        {!user.mustChangePassword && (
+          <div className="mt-8 pt-8 border-t border-luxury-border flex justify-center">
+            <button 
+              onClick={() => setCurrentPage('Dashboard')}
+              className="flex items-center gap-2 text-gold hover:text-gold/80 transition-all font-bold uppercase tracking-[0.2em] text-xs group"
+            >
+              <span>{lang === 'sw' ? 'Endelea kwenye Dashboard' : 'Continue to Dashboard'}</span>
+              <Save className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="bg-gold/5 border border-gold/20 p-6 rounded-lg text-center">
